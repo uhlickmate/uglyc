@@ -1,9 +1,12 @@
 #ifndef UGLYC_H
 #define UGLYC_H
 
-#define UGLYC_VERSION "0.1.0"
-
+#include "arena_alloc.h"
 #include "error.h"
+#include "option.h"
+#include "result.h"
 #include "string.h"
+#include "types.h"
+#include "vector.h"
 
 #endif
