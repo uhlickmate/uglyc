@@ -130,14 +130,4 @@ declare_vec_for(i32);
         res;                                                                   \
     })
 
-#define foreach_arr(size, item, array)                                         \
-    for (int keep = 1, count = 0; keep && count != size;                       \
-         keep = !keep, count++)                                                \
-        for (item = (array) + count; keep; keep = !keep)
-
-#define foreach_vec(item, vec)                                                 \
-    for (int keep = 1, count = 0; keep && count != vec.len;                    \
-         keep = !keep, count++)                                                \
-        for (item = (vec.ptr) + count; keep; keep = !keep)
-
 #endif

@@ -24,7 +24,7 @@ declare_option_for(Vec(i32));
 
 #define Some_explicit(T, v)                                                    \
     (concat(Option_, T)) { .val = v, .is_some = true, .is_none = false }
-#define None_explicit(type)                                                    \
+#define None_explicit(T)                                                       \
     (concat(Option_, T)) { .is_some = false, .is_none = true }
 
 // TODO: panic()

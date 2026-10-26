@@ -6,13 +6,16 @@
 #include <stdlib.h>
 
 typedef struct {
+    char *base;
     char *next;
     size_t len;
     size_t capacity;
 } Arena;
 
 static inline Arena Arena_new(size_t bytes) {
-    return (Arena){.next = (char *)malloc(bytes), .len = 0, .capacity = bytes};
+    char *mem_ptr = (char *)malloc(bytes);
+    return (Arena){
+        .base = mem_ptr, .next = mem_ptr, .len = 0, .capacity = bytes};
 }
 
 static inline void Arena_move(Arena *a, size_t n) {}
@@ -37,9 +40,10 @@ static inline void Arena_move(Arena *a, size_t n) {}
         Arena *_a = (arena_ptr);                                               \
         if (_a->len + _vec->len * sizeof(T) <= _a->capacity) {                 \
             T *a_ptr = memcpy(_a->next, _vec->ptr, _vec->len * sizeof(T));     \
+            free(_vec->ptr);                                                   \
             _vec->ptr = a_ptr;                                                 \
             _a->len += _vec->len * sizeof(T);                                  \
-            _a->next += _a->len * sizeof(T);                                   \
+            _a->next += _vec->len * sizeof(T);                                 \
         }                                                                      \
     })
 // original Vec is drained & becomes empty
@@ -48,22 +52,24 @@ static inline void Arena_move(Arena *a, size_t n) {}
     ({                                                                         \
         Vec(T) *_vec = (vec_ptr);                                              \
         Arena *_a = (arena_ptr);                                               \
-        Option(Vec(i32)) res = None;                                           \
+        Option(Vec(T)) res = None;                                             \
         if (_a->len + _vec->len * sizeof(T) <= _a->capacity) {                 \
             T *a_ptr = memcpy(_a->next, _vec->ptr, _vec->len * sizeof(T));     \
-            Vec(i32) v_new = {                                                 \
+            Vec(T) v_new = {                                                   \
                 .ptr = a_ptr, .len = _vec->len, .capacity = _vec->capacity};   \
             res = Some_explicit(Vec(T), v_new);                                \
-            _vec->ptr = NULL, _vec->len = 0;                                   \
-            _vec->capacity = 0;                                                \
             _a->len += _vec->len * sizeof(T);                                  \
-            _a->next += _a->len * sizeof(T);                                   \
+            _a->next += _vec->len * sizeof(T);                                 \
+            free(_vec->ptr);                                                   \
+            _vec->ptr = NULL;                                                  \
+            _vec->len = 0;                                                     \
+            _vec->capacity = 0;                                                \
         }                                                                      \
         res;                                                                   \
     })
 
 #define Arena_add_string()
 
-#define Arena_destroy(arena_ptr)
+static inline void Arena_destroy(Arena *a) { free(a->base); }
 
 #endif

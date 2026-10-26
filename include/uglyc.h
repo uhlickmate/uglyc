@@ -5,6 +5,7 @@
 #include "error.h"
 #include "option.h"
 #include "result.h"
+#include "std.h"
 #include "string.h"
 #include "types.h"
 #include "vector.h"

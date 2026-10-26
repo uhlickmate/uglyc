@@ -1,12 +1,21 @@
 #include "../include/uglyc.h"
 #include <stdio.h>
 
-int main() {
-    String s =
-        String_from("My new awesome lovely nice beautiful string thingy");
+class {
+    i32 x;
+    i32 y;
+}
+Object;
 
-    char char_buf[128];
-    String_to_char_buf(s, char_buf, sizeof(char_buf));
+impl(Object, Object, new)(i32 x, i32 y) {
+    x += 1;
+    y -= 1;
+    return (Object){.x = x, .y = y};
+}
 
-    printf("%s \n", char_buf);
+func(int) main() {
+
+    Object o = Object_new(10, 5);
+
+    return 0;
 }
