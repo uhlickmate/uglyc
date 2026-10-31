@@ -1,7 +1,9 @@
 #ifndef UGLYC_VECTOR_H
 #define UGLYC_VECTOR_H
 
+#include "std.h"
 #include "types.h"
+#include "ref.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -13,10 +15,19 @@
         T *ptr;                                                                \
         size_t len;                                                            \
         size_t capacity;                                                       \
-    } Vec_##T
+    } concat(Vec_, T)
 declare_vec_for(i32);
+declare_vec_for(usize);
+declare_vec_for(char);
+declare_vec_for(Ref(i32));
 
-#define Vec(T) Vec_##T
+// TODO: move to types.h
+typedef Ref(i32)* Ref_i32_ptr;
+typedef char* char_ptr;
+declare_vec_for(Ref_i32_ptr);
+declare_vec_for(char_ptr);
+
+#define Vec(T) concat(Vec_, T)
 
 #define Vec_new(T)                                                             \
     (Vec(T)) { .ptr = NULL, .len = 0, .capacity = 0, }
@@ -61,13 +72,13 @@ declare_vec_for(i32);
 #define Vec_push(T, vec_ptr, el)                                               \
     ({                                                                         \
         Vec(T) *_vec = (vec_ptr);                                              \
-        if (_vec->capacity == _vec->len * sizeof(T)) {                         \
+        if (_vec->capacity >= _vec->len * sizeof(T)) {                         \
             void *tmp = realloc(_vec->ptr, _vec->capacity + sizeof(T));        \
             if (tmp != NULL) {                                                 \
                 _vec->ptr = tmp;                                               \
+                _vec->ptr[_vec->len] = el;                                     \
                 _vec->len++;                                                   \
                 _vec->capacity += sizeof(T);                                   \
-                _vec->ptr[_vec->len] = el;                                     \
             }                                                                  \
         } else {                                                               \
             _vec->ptr[_vec->len] = el;                                         \
@@ -122,12 +133,6 @@ declare_vec_for(i32);
 
 // TODO: Panic when out of bounds
 #define Vec_get(vec, idx) *(vec.ptr + idx)
-#define Vec_is_empty(vec)                                                      \
-    ({                                                                         \
-        bool res = false;                                                      \
-        if (vec.len == 0)                                                      \
-            res = true;                                                        \
-        res;                                                                   \
-    })
+#define Vec_is_empty(vec) (vec.len == 0)
 
 #endif

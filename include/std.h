@@ -5,11 +5,15 @@
 
 #define concat(a, b) a##b
 
-#define class typedef struct
+#define class struct
+#define class_declared typedef struct
+#define declare_class(T) typedef struct T T
 
-#define impl(T, R, name) R concat(T##_, name)
+#define impl(T, name, R) R concat(T##_, name)
+#define method(T, method) concat(T##_, method)
 
-#define func(T) T
+#define var(name, T) T name
+#define func(T, name) T name
 
 #define for_range(from, to, item) for (int item = from; item < to + 1; item++)
 #define for_range_down(from, to, item)                                         \
@@ -24,5 +28,10 @@
     for (int keep = 1, count = 0; keep && count != vec.len;                    \
          keep = !keep, count++)                                                \
         for (item = (vec.ptr) + count; keep; keep = !keep)
+
+typedef enum {
+    Heap,
+    Stack
+} AllocType;
 
 #endif

@@ -3,6 +3,9 @@
 
 #include "arena_alloc.h"
 #include "error.h"
+#include "debug.h"
+#include "ref.h"
+#include "gc.h"
 #include "option.h"
 #include "result.h"
 #include "std.h"

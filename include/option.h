@@ -15,6 +15,7 @@
     } concat(Option_, T)
 declare_option_for(i32);
 declare_option_for(Vec(i32));
+declare_option_for(Ref(i32));
 
 #define Option(T) concat(Option_, T)
 

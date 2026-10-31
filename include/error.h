@@ -16,7 +16,9 @@
 #define FORE_NORMAL "\x1b[m"
 
 // Error codes
-#define ERR_BUF_OVERFLOW "err0001"
+#define ERR_BUF_OVERFLOW "err/general/buf_overflow"
+
+#define ERR_NOT_EQUAL "err/debug/not_equal"
 
 static inline void _panic(const char *code, const char *file, int line,
                           const char *fmt, ...) {
